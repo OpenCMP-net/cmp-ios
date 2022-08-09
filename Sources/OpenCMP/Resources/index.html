@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="X-UA-Compatible" content="edge, chrome=1">
+
+    <script type="text/javascript">
+      function getDomain() {
+        const queryString = window.location.search
+        const urlParams = new URLSearchParams(queryString)
+        return (urlParams.get("domain"))
+      }
+
+      function loadOpenCMPScript() {
+        var openCMPScript = document.createElement("script")
+        openCMPScript.setAttribute("src", "https://cdn.opencmp.net/tcf-v2/cmp-stub-latest.js")
+        openCMPScript.setAttribute("data-domain", getDomain())
+        openCMPScript.setAttribute("data-mode-production", "1")
+        openCMPScript.setAttribute("id", "open-cmp-stub")
+        document.head.appendChild(openCMPScript)
+      }
+
+      loadOpenCMPScript()
+    </script>
+
+    <style type="text/css">
+    .cmp_overlay {
+      background: transparent !important;
+    }
+    </style>
+  </head>
+  <body>
+  </body>
+</html>
