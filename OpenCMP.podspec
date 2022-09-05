@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "OpenCMP"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "Traffective Consent Management Platform"
   s.description  = <<-DESC
   Das Traffective Consent Management Tool basiert auf dem vom Branchenverband IAB Europe eingeführten Standard, dem IAB Transparency & Consent Framework. Traffective ist offiziell gelisteter Consent Management Provider mit der ID 21.
@@ -18,9 +18,11 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "git@bitbucket.org:traffective/cmp-ios.git", :tag => "#{s.version}" }
 
-  s.source_files  = "Sources/**/*.{h,swift}"
+  s.source_files  = "Sources/**/*.{h,swift,html}"
   s.exclude_files = "Tests/**/*"
 
+  s.resources = "**/Resources/*.html"]
+  
   s.swift_version       = "5.0"
 
 end

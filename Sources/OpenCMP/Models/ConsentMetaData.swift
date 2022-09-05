@@ -5,6 +5,6 @@
 //  Created by Andreas Reuter on 22.05.22.
 //
 
-struct ConsentMetaData: Codable {
-  var dv: Int
+public struct ConsentMetaData: Codable {
+  public var dv: Int
 }

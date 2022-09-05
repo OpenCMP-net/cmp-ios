@@ -6,9 +6,9 @@
 //
 
 public struct ConsentCookies: Codable {
-  var tcf: String
-  var google: String?
-  var custom: String
-  var meta: ConsentMetaData
-  var preferences: ConsentPreferences
+  public var tcf: String
+  public var google: String?
+  public var custom: String
+  public var meta: ConsentMetaData
+  public var preferences: ConsentPreferences
 }

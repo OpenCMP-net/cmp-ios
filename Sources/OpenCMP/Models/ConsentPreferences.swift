@@ -6,23 +6,23 @@
 //
 
 public struct ConsentPreferences: Codable {
-  var cmpSdkId: Int
-  var cmpSdkVersion: Int
-  var policyVersion: Int
-  var gdprApplies: Int
-  var publisherCc: String
-  var useNonStandardStacks: Int
-  var vendorConsents: String
-  var vendorLegitimateInterests: String
-  var purposeConsents: String
-  var purposeLegitimateInterests: String
-  var specialFeaturesOptIns: String
-  var publisherConsent: String
-  var publisherLegitimateInterests: String
-  var publisherCustomPurposesConsents: String
-  var publisherCustomPurposesLegitimateInterests: String
-  var customVendorConsents: String
-  var customVendorLegitimateInterests: String
+  public var cmpSdkId: Int
+  public var cmpSdkVersion: Int
+  public var policyVersion: Int
+  public var gdprApplies: Int
+  public var publisherCc: String
+  public var useNonStandardStacks: Int
+  public var vendorConsents: String
+  public var vendorLegitimateInterests: String
+  public var purposeConsents: String
+  public var purposeLegitimateInterests: String
+  public var specialFeaturesOptIns: String
+  public var publisherConsent: String
+  public var publisherLegitimateInterests: String
+  public var publisherCustomPurposesConsents: String
+  public var publisherCustomPurposesLegitimateInterests: String
+  public var customVendorConsents: String
+  public var customVendorLegitimateInterests: String
   
   enum CodingKeys: String, CodingKey {
     case cmpSdkId = "IABTCF_CmpSdkID"

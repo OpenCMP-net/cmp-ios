@@ -11,13 +11,16 @@ import WebKit
 public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
   public var acceptOrReject: (_ cookies: ConsentCookies?) -> Void
   
+  public var hideUi: () -> Void
+  
   private let url: URL
   
   internal let config: OpenCMPConfig?
   
-  private init(url: URL, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void) throws {
+  private init(url: URL, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, hideUi: @escaping () -> Void) throws {
     self.url = url
     self.acceptOrReject = acceptOrReject
+    self.hideUi = hideUi
     
     let decoder = try ConfigDecoder.shared()
     config = try decoder.decode()
@@ -31,18 +34,18 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
     super.init(nibName: nil, bundle: nil)
   }
   
-  public static func shared(acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void) throws -> OpenCMPView {
+  public static func shared(acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, hideUi: @escaping () -> Void) throws -> OpenCMPView {
     #if SWIFT_PACKAGE
     guard let url = Bundle.module.url(forResource: "index", withExtension: "html") else {
       throw OpenCMPWebViewError.cannotOpen
     }
     #else
-    guard let url = Bundle.main.url(forResource: "index", withExtension: "html") else {
+    guard let url = Bundle(for: OpenCMPView.self).url(forResource: "index", withExtension: "html") else {
       throw OpenCMPWebViewError.cannotOpen
     }
     #endif
     
-    return (try OpenCMPView(url: url, acceptOrReject: acceptOrReject))
+    return (try OpenCMPView(url: url, acceptOrReject: acceptOrReject, hideUi: hideUi))
   }
   
   required init?(coder: NSCoder) {
@@ -76,6 +79,11 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
   
   public override func viewDidAppear(_ animated: Bool) {
     webView.load(file: url, domain: config!.domain)
+  }
+  
+  public func deleteCookieStore() {
+    let cookieStore = CookieStore()
+    cookieStore.delete()
   }
   
   internal lazy var webView: WKWebView = {

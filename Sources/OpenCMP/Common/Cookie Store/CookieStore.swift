@@ -19,4 +19,8 @@ class CookieStore {
     }
     return (nil)
   }
+  
+  func delete() {
+    UserDefaults.standard.removeObject(forKey: Constants.cookieStoreName)
+  }
 }
