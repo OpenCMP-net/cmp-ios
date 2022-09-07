@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.screenshots  = "https://traffective.com/wp-content/uploads/2022/01/trf-platform-cmp.png"
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
-  s.author             = { "Traffective GmbH" => "info@traffective.com" }
+  s.author       = { "Traffective GmbH" => "info@traffective.com" }
 
   s.platform     = :ios
   s.platform     = :ios, "11.0"
@@ -21,8 +21,8 @@ Pod::Spec.new do |s|
   s.source_files  = "Sources/**/*.{h,swift,html}"
   s.exclude_files = "Tests/**/*"
 
-  s.resources = "**/Resources/*.html"]
+  s.resources = ["**/Resources/*.html"]
   
-  s.swift_version       = "5.0"
+  s.swift_version = "5.0"
 
 end
