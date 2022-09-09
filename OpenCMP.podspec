@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "OpenCMP"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "Traffective Consent Management Platform"
   s.description  = <<-DESC
   Das Traffective Consent Management Tool basiert auf dem vom Branchenverband IAB Europe eingeführten Standard, dem IAB Transparency & Consent Framework. Traffective ist offiziell gelisteter Consent Management Provider mit der ID 21.

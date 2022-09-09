@@ -10,5 +10,6 @@ import Foundation
 enum WebViewScriptAction: String {
   case getConsent
   case setConsent
+  case showUi
   case hideUi
 }

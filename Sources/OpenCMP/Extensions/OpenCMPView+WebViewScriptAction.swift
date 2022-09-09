@@ -22,20 +22,30 @@ extension OpenCMPView {
         }
       }
       
-      webView.evaluateJavaScript("trfCmpResolvePromise('\(message.body)', '\(cookieJson)')")
+      webView.evaluateJavaScript("trfCmpResolvePromise('\(message.body)', '\(cookieJson)')") { _, error in
+        guard error == nil else {
+          print("Cookie consent responds with a JavaScript error: \(error!).")
+          return
+        }
+      }
     case .setConsent:
       if let cookieJson = String(describing: message.body).data(using: .utf8) {
         let cookieStore = CookieStore()
         if let cookies = cookieStore.decode(cookieJson: cookieJson) {
           cookieStore.store(cookies)
+          hideUiView()
           acceptOrReject(cookies)
           break
         }
       }
       
+      hideUiView()
       acceptOrReject(nil)
+    case .showUi:
+      showUiView()
+      showUi()
     case .hideUi, .none:
-      print(message.body)
+      hideUiView()
       hideUi()
     }
   }
