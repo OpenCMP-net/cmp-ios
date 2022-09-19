@@ -7,4 +7,5 @@
 
 struct Constants {
   static let cookieStoreName = "OpenCMPCookieStore"
+  static let customUserAgent = "ios2"
 }

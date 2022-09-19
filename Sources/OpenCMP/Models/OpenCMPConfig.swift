@@ -9,4 +9,5 @@ struct OpenCMPConfig: Codable {
   var domain: String
   var allowedDomains: [String]
   var disableDomainAccessPolicy: Bool
+  var printBrowserLogs: Bool
 }

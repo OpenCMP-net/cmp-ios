@@ -12,4 +12,5 @@ enum WebViewScriptAction: String {
   case setConsent
   case showUi
   case hideUi
+  case captureLog
 }

@@ -96,6 +96,8 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
     configuration.userContentController.add(self, name: WebViewScriptAction.showUi.rawValue)
     configuration.userContentController.add(self, name: WebViewScriptAction.hideUi.rawValue)
 
+    configuration.applicationNameForUserAgent = Constants.customUserAgent
+    
     let webView = WKWebView(
       frame: view.bounds,
       configuration: configuration
@@ -107,6 +109,12 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
     webView.alpha = 0
     webView.transform = CGAffineTransform(translationX: 0, y: view.frame.height)
     webView.isHidden = true
+    
+    if let config = config {
+      if config.printBrowserLogs {
+        webView.browserLogs(messageHandler: self)
+      }
+    }
     
     return (webView)
   }()

@@ -47,6 +47,8 @@ extension OpenCMPView {
     case .hideUi, .none:
       hideUiView()
       hideUi()
+    case .captureLog:
+      print(message.body)
     }
   }
 }
