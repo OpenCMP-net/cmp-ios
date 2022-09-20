@@ -9,15 +9,17 @@ import UIKit
 import WebKit
 
 public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessageHandler {
-  public var acceptOrReject: (_ cookies: ConsentCookies?) -> Void
+  static public var shared: OpenCMPView?
   
-  public var showUi: () -> Void
+  internal var acceptOrReject: (_ cookies: ConsentCookies?) -> Void
   
-  public var hideUi: () -> Void
+  internal var showUi: () -> Void
   
-  private let url: URL
+  internal var hideUi: () -> Void
   
   internal let config: OpenCMPConfig?
+  
+  private let url: URL
   
   private init(url: URL, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws {
     self.url = url
@@ -38,17 +40,26 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
   }
   
   public static func shared(acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws -> OpenCMPView {
-    #if SWIFT_PACKAGE
-    guard let url = Bundle.module.url(forResource: "cmp", withExtension: "html") else {
-      throw OpenCMPWebViewError.cannotOpen
+    if shared == nil {
+      #if SWIFT_PACKAGE
+      let url = Bundle.module.url(forResource: "cmp", withExtension: "html")
+      #else
+      let url = Bundle(for: OpenCMPView.self).url(forResource: "cmp", withExtension: "html")
+      #endif
+      
+      guard let url = url else {
+        throw OpenCMPWebViewError.cannotOpen
+      }
+      
+      shared = try OpenCMPView(
+        url: url,
+        acceptOrReject: acceptOrReject,
+        showUi: showUi,
+        hideUi: hideUi
+      )
     }
-    #else
-    guard let url = Bundle(for: OpenCMPView.self).url(forResource: "cmp", withExtension: "html") else {
-      throw OpenCMPWebViewError.cannotOpen
-    }
-    #endif
     
-    return (try OpenCMPView(url: url, acceptOrReject: acceptOrReject, showUi: showUi, hideUi: hideUi))
+    return (shared!)
   }
   
   required init?(coder: NSCoder) {
@@ -87,6 +98,16 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
   public func deleteCookieStore() {
     let cookieStore = CookieStore()
     cookieStore.delete()
+  }
+  
+  public func showUiByUser() {
+    // Shows the cookie consent banner by triggering the js api.
+    webView.evaluateJavaScript("__tcfapi(\"showUi\", 2, function(){})") { _, error in
+      guard error == nil else {
+        print("Cookie consent responds with a JavaScript error: \(error!).")
+        return
+      }
+    }
   }
   
   internal lazy var webView: WKWebView = {
