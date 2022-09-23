@@ -6,6 +6,5 @@
 //
 
 enum OpenCMPWebViewError: Error {
-  case cannotOpen
-  case domainNotFound
+  case cannotLoad
 }

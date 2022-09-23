@@ -50,6 +50,21 @@ You can start with the default configuration below. However, we provide you with
             <false/>
     </dict>
     </plist>
+# Apply remote configuration
+
+You can inject the config object without using the **OpenCMP-Info.plist**. You should not have the **OpenCMP-Info.plist** in place if you inject the config object otherwise your config gets overwritten with the config from **OpenCMP-Info.plist** the file.
+
+    let config = OpenCMPConfig(
+      domain: "traffective.com",
+      allowedDomains: ["www.traffective.com"],
+      disableDomainAccessPolicy: true,
+      printBrowserLogs: false
+    )
+    
+    let uiView = try? OpenCMPView.shared(config: config, acceptOrReject: acceptOrReject, showUi: showUi, hideUi: hideUi)
+    return (uiView!)
+
+
 # UIKit integration
 
 Our Open CMP framework is developed in UIKit. Therefore it becomes easy to add the view of the Cookie Consent Banner into your app code. You will receive the cookie data via the ***acceptOrReject*** closure. It will dismiss the Open CMP view whenever the user accepted or rejected the consent.

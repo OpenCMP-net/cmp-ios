@@ -7,5 +7,5 @@
 
 enum ConfigDecodingError: Error {
   case configNotFound
-  case cannotLoadConfig
+  case domainNotFound
 }

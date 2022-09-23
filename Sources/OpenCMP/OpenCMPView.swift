@@ -21,45 +21,52 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
   
   private let url: URL
   
-  private init(url: URL, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws {
+  private init(config: OpenCMPConfig, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws {
+    #if SWIFT_PACKAGE
+    let url = Bundle.module.url(forResource: "cmp", withExtension: "html")
+    #else
+    let url = Bundle(for: OpenCMPView.self).url(forResource: "cmp", withExtension: "html")
+    #endif
+    
+    guard let url = url else {
+      throw OpenCMPWebViewError.cannotLoad
+    }
+    
     self.url = url
     self.acceptOrReject = acceptOrReject
     self.showUi = showUi
     self.hideUi = hideUi
-    
-    let decoder = try ConfigDecoder.shared()
-    config = try decoder.decode()
-    
-    if config != nil {
-      if config!.domain.isEmpty {
-        throw OpenCMPWebViewError.domainNotFound
-      }
-    }
+    self.config = config
     
     super.init(nibName: nil, bundle: nil)
   }
   
-  public static func shared(acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws -> OpenCMPView {
+  public static func shared(config: OpenCMPConfig, acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws -> OpenCMPView? {
     if shared == nil {
-      #if SWIFT_PACKAGE
-      let url = Bundle.module.url(forResource: "cmp", withExtension: "html")
-      #else
-      let url = Bundle(for: OpenCMPView.self).url(forResource: "cmp", withExtension: "html")
-      #endif
-      
-      guard let url = url else {
-        throw OpenCMPWebViewError.cannotOpen
-      }
-      
       shared = try OpenCMPView(
-        url: url,
+        config: config,
         acceptOrReject: acceptOrReject,
         showUi: showUi,
         hideUi: hideUi
       )
     }
     
-    return (shared!)
+    return (shared)
+  }
+  
+  public static func shared(acceptOrReject: @escaping (_ cookies: ConsentCookies?) -> Void, showUi: @escaping () -> Void, hideUi: @escaping () -> Void) throws -> OpenCMPView? {
+    guard shared == nil else {
+      return (shared)
+    }
+    
+    let decoder = try ConfigDecoder.shared()
+    let config = try decoder.decode()
+    
+    guard config?.domain != nil else {
+      throw ConfigDecodingError.domainNotFound
+    }
+    
+    return (try OpenCMPView.shared(config: config!, acceptOrReject: acceptOrReject, showUi: showUi, hideUi: hideUi))
   }
   
   required init?(coder: NSCoder) {
@@ -92,7 +99,9 @@ public class OpenCMPView: UIViewController, WKNavigationDelegate, WKScriptMessag
   }
   
   public override func viewDidAppear(_ animated: Bool) {
-    webView.load(file: url, domain: config!.domain)
+    // Open cmp can accept an empty domain string. In this case
+    // the open cmp shows the default styles of the open cmp.
+    webView.load(file: url, domain: config?.domain ?? "")
   }
   
   public func deleteCookieStore() {
